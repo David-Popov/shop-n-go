@@ -1,24 +1,25 @@
 package javawizzards.shopngo.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Request {
-    private LocalDate date;
+    private LocalDateTime date;
     private String RequestId;
 
     public Request() {
     }
 
-    public Request(LocalDate date, String requestId) {
+    public Request(LocalDateTime date, String requestId) {
         this.date = date;
         RequestId = requestId;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

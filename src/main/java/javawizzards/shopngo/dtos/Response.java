@@ -1,23 +1,24 @@
 package javawizzards.shopngo.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Response {
-    private LocalDate date;
+    private LocalDateTime date;
     private String errorDescription;
     private String ResponseID;
 
     public Response() {
-        setDate(LocalDate.now());
-        setResponseID(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
+        setDate(LocalDateTime.now());
+        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
