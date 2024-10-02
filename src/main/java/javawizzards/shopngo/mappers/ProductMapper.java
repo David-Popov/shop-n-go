@@ -2,6 +2,7 @@ package javawizzards.shopngo.mappers;
 
 import javawizzards.shopngo.dtos.Product.Create.CreateProductDto;
 import javawizzards.shopngo.dtos.Product.ProductDto;
+import javawizzards.shopngo.dtos.Product.Update.UpdateProductDto;
 import javawizzards.shopngo.entities.Product;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
-
+    //Object Map implementations
     public ProductDto toProductDTO(Product product) {
         return new ProductDto(
                 product.getId(),
@@ -39,6 +40,16 @@ public class ProductMapper {
         return product;
     }
 
+    public Product toProductFromUpdateProductDto(UpdateProductDto updateProductDto) {
+        Product product = new Product();
+        product.setName(updateProductDto.getName());
+        product.setDescription(updateProductDto.getDescription());
+        product.setPrice(updateProductDto.getPrice());
+        product.setQuantity(updateProductDto.getQuantity());
+        return product;
+    }
+
+    //List Map implementations
     public List<ProductDto> toProductDtoList(List<Product> products) {
         return products.stream()
                 .map(this::toProductDTO)

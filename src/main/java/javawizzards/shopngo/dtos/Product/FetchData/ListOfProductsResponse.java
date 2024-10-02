@@ -1,4 +1,4 @@
-package javawizzards.shopngo.dtos.Product.Create;
+package javawizzards.shopngo.dtos.Product.FetchData;
 
 import javawizzards.shopngo.dtos.Product.ProductDto;
 import javawizzards.shopngo.dtos.Response;
@@ -6,20 +6,20 @@ import javawizzards.shopngo.dtos.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class CreateProductResponse extends Response {
+public class ListOfProductsResponse extends Response{
     List<ProductDto> products;
 
-    public CreateProductResponse(List<ProductDto> products) {
+    public ListOfProductsResponse(List<ProductDto> products) {
         this.products = products;
     }
 
-    public CreateProductResponse(String errorDesciption) {
+    public ListOfProductsResponse(String errorDesciption) {
         setErrorDescription(errorDesciption);
     }
 
-    public CreateProductResponse(LocalDateTime date, String errorDescription, String errorCode, String description, List<ProductDto> products) {
+    public ListOfProductsResponse(LocalDateTime date, String errorDescription, String errorCode, String description, List<ProductDto> products) {
         super(date, errorDescription, errorCode, description);
-        setProducts(products);
+        this.products = products;
     }
 
     public List<ProductDto> getProducts() {

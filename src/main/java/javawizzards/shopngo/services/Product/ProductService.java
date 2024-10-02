@@ -2,14 +2,15 @@ package javawizzards.shopngo.services.Product;
 
 import javawizzards.shopngo.dtos.Product.Create.CreateProductRequest;
 import javawizzards.shopngo.dtos.Product.ProductDto;
+import javawizzards.shopngo.dtos.Product.Update.UpdateProductDto;
 import javawizzards.shopngo.entities.Product;
 
 import java.util.List;
 
 public interface ProductService {
     List<ProductDto> GetAllProducts();
-    Product GetProductById(int id);
+    ProductDto FindProductById(long id);
     List<ProductDto> CreateProducts(CreateProductRequest product);
-    void UpdateProduct(Product product);
-    void DeleteProduct(int id);
+    void UpdateProduct(UpdateProductDto product);
+    void DeleteProduct(long id);
 }
