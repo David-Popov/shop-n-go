@@ -38,6 +38,26 @@ public class Response {
         this.errorDescription = errorDescription;
         this.ErrorCode = errorCode;
         this.Description = description;
+        setDate(LocalDateTime.now());
+        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
+    }
+
+    public Response(LocalDateTime date, String errorDescription) {
+        this.date = date;
+        this.errorDescription = errorDescription;
+        this.ErrorCode = "";
+        this.Description = "";
+        setDate(LocalDateTime.now());
+        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
+    }
+
+    public Response(LocalDateTime date) {
+        this.date = date;
+        this.errorDescription = "";
+        this.ErrorCode = "";
+        this.Description = "";
+        setDate(LocalDateTime.now());
+        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
     }
 
     public String getResponseID() {

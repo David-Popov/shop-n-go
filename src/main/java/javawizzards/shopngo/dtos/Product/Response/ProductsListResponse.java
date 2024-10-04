@@ -1,25 +1,25 @@
-package javawizzards.shopngo.dtos.Product.Create;
+package javawizzards.shopngo.dtos.Product.Response;
 
-import javawizzards.shopngo.dtos.Product.ProductDto;
+import javawizzards.shopngo.dtos.Product.Request.ProductDto;
 import javawizzards.shopngo.dtos.Response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class CreateProductResponse extends Response {
+public class ProductsListResponse extends Response{
     List<ProductDto> products;
 
-    public CreateProductResponse(List<ProductDto> products) {
+    public ProductsListResponse(List<ProductDto> products) {
         this.products = products;
     }
 
-    public CreateProductResponse(String errorDesciption) {
+    public ProductsListResponse(String errorDesciption) {
         setErrorDescription(errorDesciption);
     }
 
-    public CreateProductResponse(LocalDateTime date, String errorDescription, String errorCode, String description, List<ProductDto> products) {
+    public ProductsListResponse(LocalDateTime date, String errorDescription, String errorCode, String description, List<ProductDto> products) {
         super(date, errorDescription, errorCode, description);
-        setProducts(products);
+        this.products = products;
     }
 
     public List<ProductDto> getProducts() {

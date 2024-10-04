@@ -1,8 +1,7 @@
 package javawizzards.shopngo.mappers;
 
-import javawizzards.shopngo.dtos.Product.Create.CreateProductDto;
-import javawizzards.shopngo.dtos.Product.ProductDto;
-import javawizzards.shopngo.dtos.Product.Update.UpdateProductDto;
+import javawizzards.shopngo.dtos.Product.Request.ProductDto;
+import javawizzards.shopngo.entities.Category;
 import javawizzards.shopngo.entities.Product;
 import org.springframework.stereotype.Component;
 
@@ -11,60 +10,41 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
-    //Object Map implementations
-    public ProductDto toProductDTO(Product product) {
+    public ProductDto toProductDto(Product product) {
+        Long categoryId = product.getCategory() != null ? product.getCategory().getId() : null;
         return new ProductDto(
-                product.getId(),
-                product.getQuantity(),
-                product.getPrice(),
+                product.getName(),
                 product.getDescription(),
-                product.getName()
+                product.getPrice(),
+                product.getQuantity(),
+                product.getImageUrl(),
+                product.getRating(),
+                categoryId
         );
     }
 
-    public Product toProductFromProductDto(ProductDto productDTO) {
+    public Product toProductFromProductDto(ProductDto productDTO, Category category) {
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setQuantity(productDTO.getQuantity());
+        product.setImageUrl(productDTO.getImageUrl());
+        product.setRating(productDTO.getRating());
+        product.setCategory(category); // Setting the Category object
         return product;
     }
 
-    public Product toProductFromCreateProductDto(CreateProductDto createProductDto) {
-        Product product = new Product();
-        product.setName(createProductDto.getName());
-        product.setDescription(createProductDto.getDescription());
-        product.setPrice(createProductDto.getPrice());
-        product.setQuantity(createProductDto.getQuantity());
-        return product;
-    }
-
-    public Product toProductFromUpdateProductDto(UpdateProductDto updateProductDto) {
-        Product product = new Product();
-        product.setName(updateProductDto.getName());
-        product.setDescription(updateProductDto.getDescription());
-        product.setPrice(updateProductDto.getPrice());
-        product.setQuantity(updateProductDto.getQuantity());
-        return product;
-    }
-
-    //List Map implementations
+    // List Map implementations
     public List<ProductDto> toProductDtoList(List<Product> products) {
         return products.stream()
-                .map(this::toProductDTO)
+                .map(this::toProductDto)
                 .collect(Collectors.toList());
     }
 
-    public List<Product> toProductListFromProductDtoList(List<ProductDto> productDTOs) {
+    public List<Product> toProductListFromProductDtoList(List<ProductDto> productDTOs, Category category) {
         return productDTOs.stream()
-                .map(this::toProductFromProductDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<Product> toProductListFromCreateProductDtoList(List<CreateProductDto> productDTOs) {
-        return productDTOs.stream()
-                .map(this::toProductFromCreateProductDto)
+                .map(productDTO -> toProductFromProductDto(productDTO, category))
                 .collect(Collectors.toList());
     }
 }
