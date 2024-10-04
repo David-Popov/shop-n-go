@@ -1,55 +1,121 @@
 package javawizzards.shopngo.controllers;
 
-import javawizzards.shopngo.entities.Product;
-import javawizzards.shopngo.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import javawizzards.shopngo.dtos.Product.Request.ProductDto;
+import javawizzards.shopngo.dtos.Product.Response.ProductResponse;
+import javawizzards.shopngo.dtos.Product.Response.ProductsListResponse;
+import javawizzards.shopngo.dtos.Response;
+import javawizzards.shopngo.mappers.ProductMapper;
+import javawizzards.shopngo.services.Product.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
+
+    public ProductController(ProductService productService, ProductMapper productMapper) {
+        this.productService = productService;
+        this.productMapper = productMapper;
+    }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<ProductsListResponse> getAllProducts() {
+        try{
+            var productsList = this.productMapper.toProductDtoList(this.productService.GetAllProducts());
+
+            var response = new ProductsListResponse(LocalDateTime.now(), "", "", "", productsList);
+            return ResponseEntity.ok(response);
+
+        }catch (Exception e){
+            var response = new ProductsListResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productRepository.save(product);
-    }
+    @PostMapping("/create")
+    public ResponseEntity<ProductsListResponse> createProduct(@RequestBody List<ProductDto> request) {
+        try{
+            if (request == null){
+                var response = new ProductsListResponse(LocalDateTime.now(), "Invalid request!", "", "", null);
+                return ResponseEntity.badRequest().body(response);
+            }
 
-    @PostMapping("/batch")
-    public List<Product> createProducts(@RequestBody List<Product> products) {
-        return productRepository.saveAll(products);
+            var productsList = this.productMapper.toProductDtoList(this.productService.createProducts(request));
+            var response = new ProductsListResponse(LocalDateTime.now(), "", "", "", productsList);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            var response = new ProductsListResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+            return ResponseEntity.internalServerError().body(response);
+        }
+
+
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        try{
+            if (id < 0){
+                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            var product = this.productMapper.toProductDto(this.productService.FindProductById(id));
+
+            var response = new ProductResponse(LocalDateTime.now(), "", "", "Product deleted successfully", product);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+            return ResponseEntity.internalServerError().body(response);
+        }
+
+
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setQuantity(productDetails.getQuantity());
-        return productRepository.save(product);
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody ProductDto request) {
+        try{
+            if (id < 0){
+                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+            if (request == null){
+                var response = new ProductResponse(LocalDateTime.now(), "Invalid product details!", "", "", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            var product = this.productMapper.toProductDto(this.productService.UpdateProduct(id, request));
+            var response = new ProductResponse(LocalDateTime.now(), "", "", "Product deleted successfully", product);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        productRepository.delete(product);
+    public ResponseEntity<Response> deleteProduct(@PathVariable Long id) {
+        try{
+            if (id < 0){
+                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            this.productService.DeleteProduct(id);
+            var response = new Response(LocalDateTime.now(), "", "", "Product deleted successfully");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 }
