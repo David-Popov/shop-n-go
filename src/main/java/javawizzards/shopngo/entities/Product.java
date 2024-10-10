@@ -20,12 +20,16 @@ public class Product {
     private double rating;
 
     @ManyToOne
+    @JoinColumn(name = "discount_id", nullable = true)
+    private Discount discount;
+
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     public Product() {}
 
-    public Product(Long id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating, Category category) {
+    public Product(Long id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating, Category category, Discount discount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -35,6 +39,7 @@ public class Product {
         this.isDeleted = isDeleted;
         this.rating = rating;
         this.category = category;
+        this.discount = discount;
     }
 
     // Getters and Setters
@@ -108,5 +113,21 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 }

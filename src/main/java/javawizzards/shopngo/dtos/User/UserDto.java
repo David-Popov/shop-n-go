@@ -1,47 +1,23 @@
-package javawizzards.shopngo.entities;
+package javawizzards.shopngo.dtos.User;
 
-import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-@Entity
-@Table(name = "usersNew")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UserDto {
     private String username;
     private String password;
     private String firstName;
     private String secondName;
     private String address;
     private String phoneNumber;
-    private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
 
-    public User() {
+    public UserDto() {
     }
 
-    public User(Long id, String username, String password, String firstName, String secondName, String address, String phoneNumber, LocalDateTime createdAt, LocalDateTime updateAt) {
-        this.id = id;
+    public UserDto(String username, String password, String firstName, String secondName, String address, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.secondName = secondName;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -90,21 +66,5 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
     }
 }

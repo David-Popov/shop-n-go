@@ -3,6 +3,7 @@ package javawizzards.shopngo.entities;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 public class CartItem {
@@ -12,29 +13,21 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "session_id")
+    private ShoppingSession shoppingSession;
 
     @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private int quantity;
+
     private BigDecimal price;
 
-    // getters and setters
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    @Column(name = "modified_at")
+    private LocalDateTime updatedAt;
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
 }

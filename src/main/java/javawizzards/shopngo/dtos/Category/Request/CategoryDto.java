@@ -1,7 +1,13 @@
 package javawizzards.shopngo.dtos.Category.Request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CategoryDto {
+
+    @JsonProperty("id")
     private long id;
+
+    @JsonProperty("name")
     private String name;
 
     public CategoryDto(long id, String name) {
