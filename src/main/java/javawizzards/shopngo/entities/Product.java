@@ -2,14 +2,15 @@ package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Table(name = "products")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String name;
     private String description;
@@ -21,7 +22,7 @@ public class Product {
 
     public Product() {}
 
-    public Product(Long id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating) {
+    public Product(UUID id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,11 +34,11 @@ public class Product {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

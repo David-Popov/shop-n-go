@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String username;
     private String password;
     private String firstName;
@@ -24,7 +25,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String password, String firstName, String secondName, String address, String phoneNumber, LocalDateTime createdAt, LocalDateTime updateAt) {
+    public User(UUID id, String username, String password, String firstName, String secondName, String address, String phoneNumber, LocalDateTime createdAt, LocalDateTime updateAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -36,11 +37,11 @@ public class User {
         this.updateAt = updateAt;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
