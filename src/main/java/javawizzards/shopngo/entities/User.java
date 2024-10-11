@@ -2,8 +2,6 @@ package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -13,28 +11,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String googleId;
+    private String email;
     private String username;
-    private String password;
-    private String firstName;
-    private String secondName;
-    private String address;
+    private String pictureUrl;
     private String phoneNumber;
-    private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
 
     public User() {
     }
 
-    public User(UUID id, String username, String password, String firstName, String secondName, String address, String phoneNumber, LocalDateTime createdAt, LocalDateTime updateAt) {
+    public User(UUID id,String googleId, String email, String username, String pictureUrl, String phoneNumber) {
         this.id = id;
+        this.googleId = googleId;
+        this.email = email;
         this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.address = address;
+        this.pictureUrl = pictureUrl;
         this.phoneNumber = phoneNumber;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
     }
 
     public UUID getId() {
@@ -45,6 +37,22 @@ public class User {
         this.id = id;
     }
 
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -53,36 +61,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
     public String getPhoneNumber() {
@@ -93,19 +77,4 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
 }
