@@ -1,13 +1,9 @@
 package javawizzards.shopngo.services.Product;
 
 import javawizzards.shopngo.dtos.Product.Request.ProductDto;
-import javawizzards.shopngo.entities.Category;
-import javawizzards.shopngo.entities.Discount;
 import javawizzards.shopngo.entities.Product;
 import javawizzards.shopngo.mappers.ProductMapper;
 import javawizzards.shopngo.repositories.ProductRepository;
-import javawizzards.shopngo.services.Category.CategoryService;
-import javawizzards.shopngo.services.Discount.DiscountService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,14 +14,10 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final CategoryService categoryService;
-    private final DiscountService discountService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, CategoryService categoryService, DiscountService discountService) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
-        this.categoryService = categoryService;
-        this.discountService = discountService;
     }
 
     @Override
@@ -60,17 +52,9 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<Product> createProducts(List<ProductDto> productDtos) {
         List<Product> mappedProductList = new ArrayList<>();
-        List<Discount> discounts = this.discountService.getDiscounts();
 
         for (ProductDto productDto : productDtos) {
-            Category category = this.categoryService.getCategoryById(productDto.getCategoryId());
-
-            Discount discount = discounts.stream()
-                    .filter(d -> d.getId() == productDto.getDiscountId())
-                    .findFirst()
-                    .orElse(null);
-
-            Product product = this.productMapper.toProductFromProductDto(productDto, category, discount);
+            Product product = this.productMapper.toProductFromProductDto(productDto);
 
             mappedProductList.add(product);
         }
@@ -82,8 +66,6 @@ public class ProductServiceImpl implements ProductService{
     public Product UpdateProduct(long id, ProductDto productDto) {
         try {
             Product productForUpdate = this.FindById(id);
-            Category category = this.categoryService.getCategoryById(productDto.getCategoryId());
-            Discount discount = (productDto.getDiscountId() > 0) ? this.discountService.getDiscountById(productDto.getDiscountId()) : null;
 
             if (productForUpdate == null) {
                 return null;
@@ -95,8 +77,6 @@ public class ProductServiceImpl implements ProductService{
             productForUpdate.setQuantity(productDto.getQuantity());
             productForUpdate.setRating(productDto.getRating());
             productForUpdate.setImageUrl(productDto.getImageUrl());
-            productForUpdate.setCategory(category);
-            productForUpdate.setDiscount(discount); // Update discount
 
             this.productRepository.save(productForUpdate);
             return productForUpdate;

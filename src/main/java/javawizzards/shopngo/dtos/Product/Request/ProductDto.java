@@ -1,7 +1,6 @@
 package javawizzards.shopngo.dtos.Product.Request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javawizzards.shopngo.entities.Category;
 
 import java.math.BigDecimal;
 
@@ -25,24 +24,13 @@ public class ProductDto {
     @JsonProperty("rating")
     private double rating;
 
-    @JsonProperty("categoryId")
-    private long categoryId;
-
-    @JsonProperty("discountId")
-    private long discountId;
-
-    public ProductDto() {
-    }
-
-    public ProductDto(String name, String description, BigDecimal price, int quantity, String imageUrl, double rating, long categoryId, long discountId) {
+    public ProductDto(String name, String description, BigDecimal price, int quantity, String imageUrl, double rating) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
         this.rating = rating;
-        this.categoryId = categoryId;
-        this.discountId = discountId;
     }
 
     public String getName() {
@@ -91,21 +79,5 @@ public class ProductDto {
 
     public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public long getDiscountId() {
-        return discountId;
-    }
-
-    public void setDiscountId(long discountId) {
-        this.discountId = discountId;
     }
 }
