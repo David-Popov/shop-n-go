@@ -2,16 +2,18 @@ package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String googleId;
     private String email;
     private String username;
@@ -19,12 +21,24 @@ public class User {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders;
+    private Set<Order> orders = new HashSet<>();
 
-    public User() {
-    }
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
-    public User(UUID id,String googleId, String email, String username, String pictureUrl, String phoneNumber, List<Order> orders) {
+    @ManyToMany
+    @JoinTable(
+            name = "user_categories",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
+
+    public User() {}
+
+    public User(UUID id, String googleId, String email, String username,
+                String pictureUrl, String phoneNumber, Set<Order> orders,
+                Cart cart, Set<Category> categories) {
         this.id = id;
         this.googleId = googleId;
         this.email = email;
@@ -32,8 +46,11 @@ public class User {
         this.pictureUrl = pictureUrl;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
+        this.cart = cart;
+        this.categories = categories;
     }
 
+    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -82,12 +99,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
+    public Set<Order> getOrders() { return orders; }
+    public void setOrders(Set<Order> orders) { this.orders = orders; }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
+    public Cart getCart() { return cart; }
+    public void setCart(Cart cart) { this.cart = cart; }
 
+    public Set<Category> getCategories() { return categories; }
+    public void setCategories(Set<Category> categories) { this.categories = categories; }
 }

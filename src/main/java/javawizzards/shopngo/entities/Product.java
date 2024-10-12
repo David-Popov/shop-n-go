@@ -2,6 +2,8 @@ package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,9 +22,17 @@ public class Product {
     private Boolean isDeleted;
     private double rating;
 
+    @ManyToMany
+    @JoinTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
+
     public Product() {}
 
-    public Product(UUID id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating) {
+    public Product(UUID id, String name, String description, BigDecimal price, int quantity, String imageUrl, Boolean isDeleted, double rating, Set<Category> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,6 +41,7 @@ public class Product {
         this.imageUrl = imageUrl;
         this.isDeleted = isDeleted;
         this.rating = rating;
+        this.categories = categories;
     }
 
     // Getters and Setters
@@ -105,4 +116,7 @@ public class Product {
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
     }
+
+    public Set<Category> getCategories() { return categories; }
+    public void setCategories(Set<Category> categories) { this.categories = categories; }
 }
