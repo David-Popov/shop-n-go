@@ -2,6 +2,7 @@ package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,16 +18,20 @@ public class User {
     private String pictureUrl;
     private String phoneNumber;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
     public User() {
     }
 
-    public User(UUID id,String googleId, String email, String username, String pictureUrl, String phoneNumber) {
+    public User(UUID id,String googleId, String email, String username, String pictureUrl, String phoneNumber, List<Order> orders) {
         this.id = id;
         this.googleId = googleId;
         this.email = email;
         this.username = username;
         this.pictureUrl = pictureUrl;
         this.phoneNumber = phoneNumber;
+        this.orders = orders;
     }
 
     public UUID getId() {
@@ -75,6 +80,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
 }

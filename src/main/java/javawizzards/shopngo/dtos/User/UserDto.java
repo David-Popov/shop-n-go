@@ -11,7 +11,6 @@ public class UserDto {
     }
 
     public UserDto(String googleId, String email, String username, String pictureUrl, String phoneNumber) {
-        this.username = username;
         this.googleId = googleId;
         this.email = email;
         this.username = username;
