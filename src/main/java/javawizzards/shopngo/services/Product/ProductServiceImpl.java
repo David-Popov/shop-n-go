@@ -1,32 +1,32 @@
 package javawizzards.shopngo.services.Product;
 
 import javawizzards.shopngo.dtos.Product.Request.ProductDto;
-import javawizzards.shopngo.entities.Category;
 import javawizzards.shopngo.entities.Product;
 import javawizzards.shopngo.mappers.ProductMapper;
 import javawizzards.shopngo.repositories.ProductRepository;
-import javawizzards.shopngo.services.Category.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final CategoryService categoryService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, CategoryService categoryService) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
-        this.categoryService = categoryService;
     }
 
     @Override
     public List<Product> GetAllProducts() {
         try{
-            return this.productRepository.findAll();
+            return this.productRepository.findAll()
+                    .stream()
+                    .filter(product -> !product.getIsDeleted())
+                    .collect(Collectors.toList());
         }
         catch (Exception e){
             throw e;
@@ -51,47 +51,32 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<Product> createProducts(List<ProductDto> productDtos) {
-        try {
-            List<Product> mappedProductList = new ArrayList<>();
+        List<Product> mappedProductList = new ArrayList<>();
 
-            for (ProductDto productDto : productDtos) {
-                Category category = this.categoryService.getCategoryById(productDto.getCategoryId());
+        for (ProductDto productDto : productDtos) {
+            Product product = this.productMapper.toProductFromProductDto(productDto);
 
-                Product product = null;
-
-                if (category == null) {
-                    product.setCategory(null);
-                }
-                else {
-                    product = this.productMapper.toProductFromProductDto(productDto, category);
-                }
-
-                mappedProductList.add(product);
-            }
-
-            return this.productRepository.saveAll(mappedProductList);
-        } catch (Exception e) {
-            throw e;
+            mappedProductList.add(product);
         }
+
+        return this.productRepository.saveAll(mappedProductList);
     }
 
     @Override
-    public Product UpdateProduct(long id, ProductDto product) {
-        try{
-            var productForUpdate = this.FindById(id);
-            var category = this.categoryService.getCategoryById(product.getCategoryId());
+    public Product UpdateProduct(long id, ProductDto productDto) {
+        try {
+            Product productForUpdate = this.FindById(id);
 
             if (productForUpdate == null) {
                 return null;
             }
 
-            productForUpdate.setName(product.getName());
-            productForUpdate.setDescription(product.getDescription());
-            productForUpdate.setPrice(product.getPrice());
-            productForUpdate.setQuantity(product.getQuantity());
-            productForUpdate.setRating(product.getRating());
-            productForUpdate.setImageUrl(product.getImageUrl());
-            productForUpdate.setCategory(category);
+            productForUpdate.setName(productDto.getName());
+            productForUpdate.setDescription(productDto.getDescription());
+            productForUpdate.setPrice(productDto.getPrice());
+            productForUpdate.setQuantity(productDto.getQuantity());
+            productForUpdate.setRating(productDto.getRating());
+            productForUpdate.setImageUrl(productDto.getImageUrl());
 
             this.productRepository.save(productForUpdate);
             return productForUpdate;
@@ -99,6 +84,7 @@ public class ProductServiceImpl implements ProductService{
             throw e;
         }
     }
+
 
     @Override
     public Product DeleteProduct(long id) {
