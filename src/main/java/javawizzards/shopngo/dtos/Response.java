@@ -1,94 +1,62 @@
 package javawizzards.shopngo.dtos;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Response {
+@Getter
+@Setter
+public class Response<T> implements Serializable {
     private LocalDateTime date;
     private String errorDescription;
-    private String ResponseID;
-    private String RequestID;
-    private String ErrorCode;
-    private String Description;
+    private String responseId;
+    private HttpStatus status;
+    private String description;
+    private T data;
 
     public Response() {
-        setDate(LocalDateTime.now());
-        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public String getErrorDescription() {
-        return errorDescription;
-    }
-
-    public void setErrorDescription(String errorDescription) {
-        this.errorDescription = errorDescription;
-    }
-
-    public Response(LocalDateTime date, String errorDescription, String errorCode, String description) {
-        this.date = date;
-        this.errorDescription = errorDescription;
-        this.ErrorCode = errorCode;
-        this.Description = description;
-        setDate(LocalDateTime.now());
-        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
-    }
-
-    public Response(LocalDateTime date, String errorDescription) {
-        this.date = date;
-        this.errorDescription = errorDescription;
-        this.ErrorCode = "";
-        this.Description = "";
-        setDate(LocalDateTime.now());
-        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
-    }
-
-    public Response(LocalDateTime date) {
-        this.date = date;
+        this.date = LocalDateTime.now();
+        this.responseId = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS"));
         this.errorDescription = "";
-        this.ErrorCode = "";
-        this.Description = "";
-        setDate(LocalDateTime.now());
-        setResponseID(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSSS")));
+        this.status = HttpStatus.OK;
+        this.description = "";
+        this.data = null;
     }
 
-    public String getResponseID() {
-        return ResponseID;
+    public Response(T data, HttpStatus status, String description) {
+        this();
+        this.data = data;
+        this.status = status;
+        this.description = description;
+        this.errorDescription = "";
     }
 
-    public void setResponseID(String responseID) {
-        ResponseID = responseID;
+    public Response(HttpStatus status, String description) {
+        this();
+        this.data = null;
+        this.status = status;
+        this.description = description;
+        this.errorDescription = "";
     }
 
-    public String getErrorCode() {
-        return ErrorCode;
+    public Response(String errorDescription, HttpStatus status, String description) {
+        this();
+        this.errorDescription = errorDescription;
+        this.status = status;
+        this.description = description;
+        this.data = null;
     }
 
-    public void setErrorCode(String errorCode) {
-        ErrorCode = errorCode;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String description) {
-        Description = description;
-    }
-
-    public String getRequestID() {
-        return RequestID;
-    }
-
-    public void setRequestID(String requestID) {
-        RequestID = requestID;
+    public Response(String errorDescription) {
+        this();
+        this.errorDescription = errorDescription;
+        this.status = HttpStatus.INTERNAL_SERVER_ERROR;
+        this.description = "";
+        this.data = null;
     }
 }

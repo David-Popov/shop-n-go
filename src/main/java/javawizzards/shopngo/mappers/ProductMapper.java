@@ -1,6 +1,6 @@
 package javawizzards.shopngo.mappers;
 
-import javawizzards.shopngo.dtos.Product.Request.ProductDto;
+import javawizzards.shopngo.dtos.Product.ProductDto;
 import javawizzards.shopngo.entities.Product;
 import org.springframework.stereotype.Component;
 
