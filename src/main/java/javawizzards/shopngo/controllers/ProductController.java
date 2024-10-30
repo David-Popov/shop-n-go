@@ -1,17 +1,16 @@
 package javawizzards.shopngo.controllers;
 
-import javawizzards.shopngo.dtos.Product.Request.ProductDto;
-import javawizzards.shopngo.dtos.Product.Response.ProductResponse;
-import javawizzards.shopngo.dtos.Product.Response.ProductsListResponse;
+import javawizzards.shopngo.dtos.Product.ProductDto;
 import javawizzards.shopngo.dtos.Response;
+import javawizzards.shopngo.enumerations.ProductMessages;
 import javawizzards.shopngo.mappers.ProductMapper;
 import javawizzards.shopngo.services.Product.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
@@ -26,96 +25,83 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ProductsListResponse> getAllProducts() {
-        try{
+    public ResponseEntity<Response<?>> getAllProducts() {
+        try {
             var productsList = this.productMapper.toProductDtoList(this.productService.GetAllProducts());
 
-            var response = new ProductsListResponse(LocalDateTime.now(), "", "", "", productsList);
+            var response = new Response<>(productsList, HttpStatus.OK, "");
             return ResponseEntity.ok(response);
-
-        }catch (Exception e){
-            var response = new ProductsListResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
+        } catch (Exception e) {
+            var response = new Response<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "");
             return ResponseEntity.internalServerError().body(response);
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ProductsListResponse> createProduct(@RequestBody List<ProductDto> request) {
-        try{
-            if (request == null){
-                var response = new ProductsListResponse(LocalDateTime.now(), "Invalid request!", "", "", null);
-                return ResponseEntity.badRequest().body(response);
+    public ResponseEntity<Response<List<ProductDto>>> createProduct(@RequestBody List<ProductDto> request) {
+        try {
+            if (request == null) {
+                return ResponseEntity.badRequest()
+                        .body(new Response<>(ProductMessages.INVALID_PRODUCT_DETAILS.getMessage(), HttpStatus.BAD_REQUEST, ""));
             }
 
             var productsList = this.productMapper.toProductDtoList(this.productService.createProducts(request));
-            var response = new ProductsListResponse(LocalDateTime.now(), "", "", "", productsList);
-            return ResponseEntity.ok(response);
-
+            return ResponseEntity.ok(new Response<>(productsList, HttpStatus.OK, ProductMessages.PRODUCT_CREATION_SUCCESS.getMessage()));
         } catch (Exception e) {
-            var response = new ProductsListResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.internalServerError()
+                    .body(new Response<>(ProductMessages.PRODUCT_CREATION_FAILED.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
-
-
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
-        try{
-            if (id < 0){
-                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
-                return ResponseEntity.badRequest().body(response);
+    public ResponseEntity<Response<ProductDto>> getProductById(@PathVariable UUID id) {
+        try {
+            if (id == null || id.toString().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new Response<>(ProductMessages.INVALID_PRODUCT_ID.getMessage(), HttpStatus.BAD_REQUEST, ""));
             }
 
             var product = this.productMapper.toProductDto(this.productService.FindProductById(id));
-
-            var response = new ProductResponse(LocalDateTime.now(), "", "", "Product deleted successfully", product);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new Response<>(product, HttpStatus.OK, ""));
         } catch (Exception e) {
-            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.internalServerError()
+                    .body(new Response<>(ProductMessages.PRODUCT_NOT_FOUND.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
-
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody ProductDto request) {
-        try{
-            if (id < 0){
-                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
-                return ResponseEntity.badRequest().body(response);
+    public ResponseEntity<Response<ProductDto>> updateProduct(@PathVariable UUID id, @RequestBody ProductDto request) {
+        try {
+            if (id == null || id.toString().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new Response<>(ProductMessages.INVALID_PRODUCT_ID.getMessage(), HttpStatus.BAD_REQUEST, ""));
             }
-            if (request == null){
-                var response = new ProductResponse(LocalDateTime.now(), "Invalid product details!", "", "", null);
-                return ResponseEntity.badRequest().body(response);
+            if (request == null) {
+                return ResponseEntity.badRequest()
+                        .body(new Response<>(ProductMessages.INVALID_PRODUCT_DETAILS.getMessage(), HttpStatus.BAD_REQUEST, ""));
             }
 
             var product = this.productMapper.toProductDto(this.productService.UpdateProduct(id, request));
-            var response = new ProductResponse(LocalDateTime.now(), "", "", "Product deleted successfully", product);
-            return ResponseEntity.ok(response);
-
+            return ResponseEntity.ok(new Response<>(product, HttpStatus.OK, ProductMessages.PRODUCT_UPDATE_SUCCESS.getMessage()));
         } catch (Exception e) {
-            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.internalServerError()
+                    .body(new Response<>(ProductMessages.PRODUCT_UPDATE_FAILED.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Response> deleteProduct(@PathVariable Long id) {
-        try{
-            if (id < 0){
-                var response = new ProductResponse(LocalDateTime.now(), "Invalid product id!", "", "", null);
-                return ResponseEntity.badRequest().body(response);
+    public ResponseEntity<Response<Void>> deleteProduct(@PathVariable UUID id) {
+        try {
+            if (id == null || id.toString().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new Response<>(ProductMessages.INVALID_PRODUCT_ID.getMessage(), HttpStatus.BAD_REQUEST, ""));
             }
 
             this.productService.DeleteProduct(id);
-            var response = new Response(LocalDateTime.now(), "", "", "Product deleted successfully");
-            return ResponseEntity.ok(response);
-
+            return ResponseEntity.ok(new Response<>(HttpStatus.OK, ProductMessages.PRODUCT_DELETE_SUCCESS.getMessage()));
         } catch (Exception e) {
-            var response = new ProductResponse(LocalDateTime.now(), e.getMessage(), "", "", null);
-            return ResponseEntity.internalServerError().body(response);
+            return ResponseEntity.internalServerError()
+                    .body(new Response<>(ProductMessages.PRODUCT_DELETE_FAILED.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
         }
     }
 }

@@ -1,4 +1,4 @@
-package javawizzards.shopngo.dtos.Product.Request;
+package javawizzards.shopngo.dtos.Product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

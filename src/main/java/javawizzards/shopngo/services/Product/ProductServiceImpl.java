@@ -1,23 +1,27 @@
 package javawizzards.shopngo.services.Product;
 
-import javawizzards.shopngo.dtos.Product.Request.ProductDto;
+import javawizzards.shopngo.dtos.Product.ProductDto;
 import javawizzards.shopngo.entities.Product;
 import javawizzards.shopngo.mappers.ProductMapper;
 import javawizzards.shopngo.repositories.ProductRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ModelMapper modelMapper;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, ModelMapper modelMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product FindProductById(long id) {
+    public Product FindProductById(UUID id) {
         try{
             var product = this.FindById(id);
 
@@ -63,7 +67,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product UpdateProduct(long id, ProductDto productDto) {
+    public Product UpdateProduct(UUID id, ProductDto productDto) {
         try {
             Product productForUpdate = this.FindById(id);
 
@@ -87,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public Product DeleteProduct(long id) {
+    public Product DeleteProduct(UUID id) {
         try{
             var productForDelete = this.FindById(id);
 
@@ -102,7 +106,15 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private Product FindById(long id) {
+    private Product FindById(UUID id) {
         return this.productRepository.findById(id).stream().findFirst().orElse(null);
+    }
+
+    private ProductDto MapUserDtoToUserEntity(Product product) {
+        try{
+            return this.modelMapper.map(product, ProductDto.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
