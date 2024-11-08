@@ -12,7 +12,11 @@ public enum CartMessages {
     CART_CLEAR_SUCCESS("Cart cleared successfully."),
     INVALID_CART_OPERATION("Invalid cart operation."),
     INVALID_QUANTITY("Invalid quantity. Quantity must be greater than zero."),
-    TOTAL_PRICE_UPDATE_FAILED("Failed to update the total price.");
+    TOTAL_PRICE_UPDATE_FAILED("Failed to update the total price."),
+    INSUFFICIENT_STOCK("Insufficient stock available for the requested quantity."),
+    CART_EXPIRED("Cart has expired."),
+    CART_MERGE_FAILED("Failed to merge carts."),
+    CART_VALIDATION_FAILED("Cart validation failed.");
 
     private final String message;
 

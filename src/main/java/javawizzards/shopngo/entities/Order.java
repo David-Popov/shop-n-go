@@ -1,13 +1,14 @@
 package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -17,13 +18,13 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany
-    private List<Product> products;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private Long totalPrice;
+    private BigDecimal totalPrice;
     private String deliveryAddress;
     private String deliveryPhoneNumber;
     private String deliveryName;
@@ -37,17 +38,21 @@ public class Order {
 
     public enum Status {
         PENDING,
+        PROCESSING,
         SENT,
         SHIPPED,
         CANCELLED
     }
 
+    // Constructors
     public Order() {}
 
-    public Order(UUID id, User user, List<Product> products, Status status, Long totalPrice, String deliveryAddress, String deliveryPhoneNumber, String deliveryName, String deliveryEmail, LocalDateTime createdAt) {
+    public Order(UUID id, User user, List<OrderItem> orderItems, Status status,
+                 BigDecimal totalPrice, String deliveryAddress, String deliveryPhoneNumber,
+                 String deliveryName, String deliveryEmail, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
-        this.products = products;
+        this.orderItems = orderItems;
         this.status = status;
         this.totalPrice = totalPrice;
         this.deliveryAddress = deliveryAddress;
@@ -57,6 +62,25 @@ public class Order {
         this.createdAt = createdAt;
     }
 
+    // Relationship management methods
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
+
+    // Calculate total price based on order items
+    public void calculateTotalPrice() {
+        this.totalPrice = orderItems.stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // Getters and Setters
     public UUID getId() {
         return id;
     }
@@ -73,12 +97,12 @@ public class Order {
         this.user = user;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public Status getStatus() {
@@ -89,11 +113,11 @@ public class Order {
         this.status = status;
     }
 
-    public Long getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Long totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 

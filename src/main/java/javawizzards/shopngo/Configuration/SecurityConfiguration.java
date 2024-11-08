@@ -11,8 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -35,7 +33,11 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**",
                                 "/oauth2/**",
                                 "/users/**",
-                                "/products").permitAll()
+                                "/products/**",  // Allow all product endpoints
+                                "/products/categories/**",  // Explicitly allow categories endpoint
+                                "/products/search/**",      // Explicitly allow search endpoint
+                                "/products/filter/**"       // Explicitly allow filter endpoint
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

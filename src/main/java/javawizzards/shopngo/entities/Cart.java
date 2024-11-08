@@ -1,14 +1,20 @@
 package javawizzards.shopngo.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "carts")
+@Getter
+@Setter
 public class Cart {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -17,51 +23,42 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "cart_id")
-    private List<CartItem> items;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> items = new ArrayList<>();
 
     private BigDecimal totalPrice;
+    private LocalDateTime lastUpdated;
+    private LocalDateTime expiryDate;
 
-    public Cart() {}
-
-    public Cart(UUID id, User user, List<CartItem> items, BigDecimal totalPrice) {
-        this.id = id;
-        this.user = user;
-        this.items = items;
-        this.totalPrice = totalPrice;
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdated = LocalDateTime.now();
+        if (expiryDate == null) {
+            expiryDate = LocalDateTime.now().plusDays(7); // Cart expires after 7 days of inactivity
+        }
     }
 
-    // Getters and Setters
-    public UUID getId() {
-        return id;
+    public void addItem(CartItem item) {
+        items.add(item);
+        item.setCart(this);
+        calculateTotalPrice();
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void removeItem(CartItem item) {
+        items.remove(item);
+        item.setCart(null);
+        calculateTotalPrice();
     }
 
-    public User getUser() {
-        return user;
+    public void calculateTotalPrice() {
+        this.totalPrice = items.stream()
+                .map(CartItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<CartItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<CartItem> items) {
-        this.items = items;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void clear() {
+        items.clear();
+        totalPrice = BigDecimal.ZERO;
     }
 }

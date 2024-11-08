@@ -5,15 +5,21 @@ import javawizzards.shopngo.entities.Product;
 import javawizzards.shopngo.mappers.ProductMapper;
 import javawizzards.shopngo.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
@@ -25,21 +31,36 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> GetAllProducts() {
-        try{
+        try {
             return this.productRepository.findAll()
                     .stream()
                     .filter(product -> !product.getIsDeleted())
                     .collect(Collectors.toList());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<ProductDto> getAllProducts(int page, int size, String sortBy, String direction) {
+        try {
+            Sort.Direction sortDirection = Sort.Direction.fromString(direction.toUpperCase());
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+            Page<Product> productPage = productRepository.findByIsDeletedFalse(pageable);
+            return productPage.map(productMapper::toProductDto);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Product FindProductById(UUID id) {
-        try{
+        try {
             var product = this.FindById(id);
 
             if (product == null) {
@@ -47,19 +68,18 @@ public class ProductServiceImpl implements ProductService{
             }
 
             return product;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
 
     @Override
+    @Transactional
     public List<Product> createProducts(List<ProductDto> productDtos) {
         List<Product> mappedProductList = new ArrayList<>();
 
         for (ProductDto productDto : productDtos) {
             Product product = this.productMapper.toProductFromProductDto(productDto);
-
             mappedProductList.add(product);
         }
 
@@ -67,6 +87,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public Product UpdateProduct(UUID id, ProductDto productDto) {
         try {
             Product productForUpdate = this.FindById(id);
@@ -89,10 +110,10 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-
     @Override
+    @Transactional
     public Product DeleteProduct(UUID id) {
-        try{
+        try {
             var productForDelete = this.FindById(id);
 
             if (productForDelete == null) {
@@ -100,7 +121,57 @@ public class ProductServiceImpl implements ProductService{
             }
 
             productForDelete.setIsDeleted(true);
-            return productForDelete;
+            return this.productRepository.save(productForDelete);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductDto> searchProducts(String searchTerm, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Product> products = productRepository.searchProducts(searchTerm, pageable);
+            return products.map(productMapper::toProductDto);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDto> findProductsByPriceRangeAndRating(BigDecimal minPrice, BigDecimal maxPrice, double minRating) {
+        try {
+            List<Product> products = productRepository.findProductsByPriceRangeAndRating(minPrice, maxPrice, minRating);
+            return products.stream()
+                    .map(productMapper::toProductDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDto> findLowStockProducts(int threshold) {
+        try {
+            List<Product> products = productRepository.findLowStockProducts(threshold);
+            return products.stream()
+                    .map(productMapper::toProductDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductDto> findByCategories(List<String> categories, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Product> products = productRepository.findByCategories(categories, pageable);
+            return products.map(productMapper::toProductDto);
         } catch (Exception e) {
             throw e;
         }
@@ -111,7 +182,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     private ProductDto MapUserDtoToUserEntity(Product product) {
-        try{
+        try {
             return this.modelMapper.map(product, ProductDto.class);
         } catch (Exception e) {
             throw new RuntimeException(e);

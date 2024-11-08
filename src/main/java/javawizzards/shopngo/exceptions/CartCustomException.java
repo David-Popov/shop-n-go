@@ -50,4 +50,16 @@ public class CartCustomException {
             super(CartMessages.TOTAL_PRICE_UPDATE_FAILED.getMessage(), cause);
         }
     }
+
+    public static class InsufficientStockException extends RuntimeException {
+        public InsufficientStockException() {
+            super(CartMessages.INSUFFICIENT_STOCK.getMessage());
+        }
+    }
+
+    public static class CartExpiredException extends RuntimeException {
+        public CartExpiredException() {
+            super(CartMessages.CART_EXPIRED.getMessage());
+        }
+    }
 }
