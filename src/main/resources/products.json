@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Wireless Bluetooth Headphones",
+    "description": "High-quality wireless headphones with noise cancellation.",
+    "price": 99.99,
+    "quantity": 50,
+    "imageUrl": "http://example.com/images/headphones.png",
+    "isDeleted": false,
+    "rating": 4.8
+  },
+  {
+    "name": "Smartwatch Pro 3000",
+    "description": "Advanced smartwatch with heart-rate monitor and GPS tracking.",
+    "price": 199.99,
+    "quantity": 30,
+    "imageUrl": "http://example.com/images/smartwatch.png",
+    "isDeleted": false,
+    "rating": 4.6
+  },
+  {
+    "name": "4K Ultra HD TV 55\"",
+    "description": "Large-screen 4K TV with high dynamic range and smart features.",
+    "price": 699.99,
+    "quantity": 15,
+    "imageUrl": "http://example.com/images/tv.png",
+    "isDeleted": false,
+    "rating": 4.7
+  },
+  {
+    "name": "Gaming Laptop GX-900",
+    "description": "High-performance gaming laptop with a 144Hz display and RTX graphics.",
+    "price": 1299.99,
+    "quantity": 20,
+    "imageUrl": "http://example.com/images/laptop.png",
+    "isDeleted": false,
+    "rating": 4.9
+  },
+  {
+    "name": "USB-C Fast Charger",
+    "description": "Compact and powerful USB-C charger for fast charging devices.",
+    "price": 29.99,
+    "quantity": 100,
+    "imageUrl": "http://example.com/images/charger.png",
+    "isDeleted": false,
+    "rating": 4.3
+  },
+  {
+    "name": "Portable Power Bank 20000mAh",
+    "description": "High-capacity power bank for charging multiple devices on the go.",
+    "price": 49.99,
+    "quantity": 80,
+    "imageUrl": "http://example.com/images/powerbank.png",
+    "isDeleted": false,
+    "rating": 4.4
+  },
+  {
+    "name": "Bluetooth Speaker Pro",
+    "description": "Portable Bluetooth speaker with high-quality sound and waterproof design.",
+    "price": 79.99,
+    "quantity": 60,
+    "imageUrl": "http://example.com/images/speaker.png",
+    "isDeleted": false,
+    "rating": 4.5
+  },
+  {
+    "name": "Smartphone XR Plus",
+    "description": "Latest smartphone with an edge-to-edge display and advanced camera system.",
+    "price": 999.99,
+    "quantity": 25,
+    "imageUrl": "http://example.com/images/smartphone.png",
+    "isDeleted": false,
+    "rating": 4.6
+  },
+  {
+    "name": "Wireless Charging Pad",
+    "description": "Fast and reliable wireless charging pad compatible with most smartphones.",
+    "price": 39.99,
+    "quantity": 120,
+    "imageUrl": "http://example.com/images/chargingpad.png",
+    "isDeleted": false,
+    "rating": 4.2
+  },
+  {
+    "name": "Noise-Cancelling Earbuds",
+    "description": "In-ear noise-cancelling wireless earbuds with a charging case.",
+    "price": 149.99,
+    "quantity": 45,
+    "imageUrl": "http://example.com/images/earbuds.png",
+    "isDeleted": false,
+    "rating": 4.8
+  }
+]
